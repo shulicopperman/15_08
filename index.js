@@ -1,6 +1,10 @@
 const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 const app = express();
+
 const port = 3000;
+
+app.use(express.json());
 array = [
   { id: "1", email: "123@123", password: "123456" },
   { id: "2", email: "456@456", password: "234567" },
@@ -14,17 +18,55 @@ app.get("/user/:id", (req, res) => {
 app.get("/allUsers", (req, res) => {
   res.send(array);
 });
-app.post("/user2", (req, res) => {
-  res.send("has posted");
+app.put("/user2", (req, res) => {
+  res.send("has putted");
 });
-app.delete("/user3", (req, res) => {
-  res.send("user has deleted");
-});
-app.put("/user4", (req, res) => {
-  const newUser = { id: req.params.user4, email: req.body.email, password };
+
+app.post("/createUser", (req, res) => {
+  const newUser = {
+    id: uuidv4(),
+    email: req.body.email,
+    password: req.body.password,
+  };
   array.push(newUser);
   res.send(array);
 });
+app.delete("/deleteUser/:id", (req, res) => {
+  const indexElement = array.findIndex((object) => object.id === req.params.id);
+  console.log(array);
+  const deleteUser = array.splice(indexElement, 1);
+  console.log(array);
+  res.send(deleteUser);
+  console.log(uuidv4());
+});
+app.post("/email/password", (req, res) => {
+  const details = { email: req.body.email, password: req.body.password };
+  if (
+    array.find(
+      (user) =>
+        user.email === req.body.email && user.password === req.body.password
+    )
+  ) {
+    res.send("wrong credentials");
+  } else {
+    res.send("User is connected");
+  }
+  console.log(res);
+  // for (i = 0; i < array.length; i++)
+  //   if (
+  //     details.email === array[i].email &&
+  //     details.password === array[i].password
+  //   ) {
+  //     res.send("wrong credentials");
+  //     console.log(details);
+  //   } else {
+  //     res.send("User is connected");
+  //   }
+});
+app.post("/enterPassword",(req,res)=>{
+  async checkPassword()
+})
+
 app.listen(port, () => {
-  console.log("");
+  console.log("listening on port 3000");
 });
